@@ -19,12 +19,17 @@ module Lorem
       "Nulla tempus. Nullam non lorem. Sed non arcu. Pellentesque sit amet arcu. Praesent eu ligula. Donec sagittis, lacus ac laoreet commodo, nisl risus cursus libero, ac aliquam ipsum erat sed ante. Etiam consequat, sapien vel dapibus lobortis, orci turpis sollicitudin quam, ac porttitor magna diam nec massa. Aenean aliquam, nisl eu imperdiet gravida, eros nisi facilisis velit, eget interdum libero sem ut eros. Sed magna. Sed vitae odio. Praesent augue. Proin volutpat. Maecenas urna quam, accumsan sit amet, sodales vitae, commodo sed, purus. Donec hendrerit. Suspendisse congue. Fusce diam metus, laoreet in, mattis ut, ullamcorper ac, urna. In eget lacus. Sed mollis iaculis pede."
     ]
     
-    TYPES = [:paragraphs, :words, :chars, :characters]
+    TYPES = [:paragraphs, :sentences, :words, :chars, :characters]
     
     class << self
       # Gets the total number of paragraphs I included in the gem.
       def total_included_paragraphs
         PARAGRAPHS.size
+      end
+      
+      # Gets the total number of sentences in the included paragraphs
+      def total_included_sentences
+        included_paragraphs_joined.split('.').size
       end
       
       # Gets the total number of words in the included paragraphs.
@@ -70,6 +75,16 @@ module Lorem
       end
       
       # Outputs the correct number of words based on the number
+      def output_sentences
+        if @number <= self.class.total_included_sentences
+          convert_paragraphs_to_sentences(self.class.included_paragraphs_joined)
+        else
+          repeat = (@number / self.class.total_included_sentences.to_f).ceil
+          convert_paragraphs_to_sentences((PARAGRAPHS * repeat).join("\n\n"))
+        end
+      end
+      
+      # Outputs the correct number of words based on the number
       def output_words
         if @number <= self.class.total_included_words
           convert_paragraphs_to_words(self.class.included_paragraphs_joined)
@@ -95,7 +110,12 @@ module Lorem
         str.split(' ')[0, @number].join(' ')
       end
       
-      # Converts paragarphs to the correct number of characters
+      # Converts paragraphs to the correct number of sentences by splitting on a period
+      def convert_paragraphs_to_sentences(str)
+        str.split('.')[0, @number].join('.') + '.'
+      end
+      
+      # Converts paragraphs to the correct number of characters
       def convert_paragraphs_to_characters(str)
         str[0, @number]
       end
