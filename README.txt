@@ -9,6 +9,7 @@ Usage: lorem [number] [type] (ie: lorem 5 paragraphs)
  - Type defaults to paragraphs
  - Available Types:
    - paragraphs
+   - sentences
    - words
    - chars
    - characters
